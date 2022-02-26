@@ -102,7 +102,7 @@ def mars_facts():
     return df.to_html(classes="table table-striped") #adding this DF --> HTML code to web app, add bootstrap
 
     
-if __name__ == "__main__":  #tells Flash that script is complete and reay 
+if __name__ == "__main__":  #tells Flash that script is complete and ready 
     # If running as script, print scraped data
     print(scrape_all())
 
