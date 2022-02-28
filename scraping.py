@@ -5,26 +5,26 @@ from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 import datetime as dt
 
-def scrape_all():  #intitialize browser, create dict, and end the WebDriver and return scraped data fxn.
-    # Initiate headless driver for deployment
+
+def scrape_all():
     executable_path = {'executable_path': ChromeDriverManager().install()}
-    browser = Browser('chrome', **executable_path, headless=True)  #headless = True, no need to see scraping in action
+    browser = Browser('chrome', **executable_path, headless=True)
     
-    news_title, news_paragraph = mars_news(browser) # tells Python we're using the mars_news fxn to pull this data.
-        
-    # Run all scraping functions and store results in dictionary
+    news_title, news_paragraph = mars_news(browser)
+    img_urls_titles = mars_hemis(browser)
+
     data = {
-        "news_title": news_title,
-        "news_paragraph": news_paragraph,
-        "featured_image": featured_image(browser),
-        "facts": mars_facts(),
-        "last_modified": dt.datetime.now() # date the code was last run by
+        'news_title' : news_title,
+        'news_paragraph' : news_paragraph,
+        'featured_image' : featured_image(browser),
+        'facts' : mars_facts(),
+        'hemisphere' : img_urls_titles,
+        'last_modified' : dt.datetime.now()
     }
-
-    # Stop webdriver and return data
     browser.quit()
-    return data
-
+    return data    
+    
+    
 def mars_news(browser):  #by adding browser variable, defined outside, we add an argument to the fxn, b/c scraping code utilizes #automated browser
     
     # Visit the mars nasa news site
@@ -102,14 +102,32 @@ def mars_facts():
     return df.to_html(classes="table table-striped") #adding this DF --> HTML code to web app, add bootstrap
 
     
-if __name__ == "__main__":  #tells Flash that script is complete and ready 
-    # If running as script, print scraped data
-    print(scrape_all())
+### hemisphere images
 
+def mars_hemis(browser):
     
+    url = 'https://marshemispheres.com/'
+    browser.visit(url)
 
 
+    hemisphere_image_urls = []
+    for i in range(4):
+    
+        hemisphere = {}
+    
+        browser.find_by_css('a.product-item img')[i].click()
+        sample_elem = browser.links.find_by_text('Sample').first
+        hemisphere['img_url'] = sample_elem['href']
+    
+        hemisphere['title'] = browser.find_by_css('h2.title').text
+    
+        hemisphere_image_urls.append(hemisphere)
+    
+        browser.back()
+    
+    return hemisphere_image_urls
 
 
-
-
+if __name__ == "__main__":
+    print(scrape_all())
+    
