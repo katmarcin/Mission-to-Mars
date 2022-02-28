@@ -307,15 +307,15 @@ hemisphere_image_urls = []
 
 for i in range(4):
     
-    hemisphere = {}
+    hemispheres = {}
     
     browser.find_by_css('a.product-item img')[i].click()
     sample_elem = browser.links.find_by_text('Sample').first
-    hemisphere['img_url'] = sample_elem['href']
+    hemispheres['img_url'] = sample_elem['href']
     
-    hemisphere['title'] = browser.find_by_css('h2.title').text
+    hemispheres['title'] = browser.find_by_css('h2.title').text
     
-    hemisphere_image_urls.append(hemisphere)
+    hemisphere_image_urls.append(hemispheres)
     
     browser.back()
 
